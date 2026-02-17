@@ -25,6 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             'first_node = study_pkg.scripts.first_node:main',
+            'second_node = study_pkg.scripts.second_node:main',
+
         ],
     },
 )
