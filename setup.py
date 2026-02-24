@@ -28,6 +28,7 @@ setup(
             'second_node = study_pkg.scripts.second_node:main',
             'talker = study_pkg.scripts.talker:main',
             'listener = study_pkg.scripts.listener:main',
+            'even_number_publisher = study_pkg.scripts.even_number_publisher:main',
 
         ],
     },
