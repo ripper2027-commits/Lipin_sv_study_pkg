@@ -26,6 +26,8 @@ setup(
         'console_scripts': [
             'first_node = study_pkg.scripts.first_node:main',
             'second_node = study_pkg.scripts.second_node:main',
+            'talker = study_pkg.scripts.talker:main',
+            'listener = study_pkg.scripts.listener:main',
 
         ],
     },
