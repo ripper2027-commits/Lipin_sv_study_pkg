@@ -29,6 +29,7 @@ setup(
             'talker = study_pkg.scripts.talker:main',
             'listener = study_pkg.scripts.listener:main',
             'even_number_publisher = study_pkg.scripts.even_number_publisher:main',
+            'listener1 = study_pkg.scripts.listener1:main',
 
         ],
     },

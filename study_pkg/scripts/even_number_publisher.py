@@ -1,40 +1,57 @@
-
 #!/usr/bin/env python3
-import rclpy                        # Главная библиотека ROS 2 для Python
-from rclpy.node import Node         # Базовый класс для узла
-from std_msgs.msg import Int8       # Тип сообщения (число)
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Int32
 
-class Counter(Node):
+class EvenNumberPublisher(Node):
 
     def __init__(self):
-        super().__init__('counter')
-        self.publisher = self.create_publisher(Int8, 'numbers', 10)
-        self.publisher = self.create_publisher(Int8, 'overflow', 10)
-        timer_period = 1.0        
+        super().__init__('even_number_publisher')
+        
+        # Создаём два издателя с разными топиками
+        self.pub_even = self.create_publisher(Int32, 'even_numbers', 10)
+        self.pub_overflow = self.create_publisher(Int32, 'overflow', 10)
+        
+        # Частота 10 Гц = период 0.1 секунды
+        timer_period = 0.1
         self.timer = self.create_timer(timer_period, self.timer_callback)
+        
         self.current_number = 0
-        self.get_logger().info("Узел counter запущен! Счёт начинается.")
+        self.get_logger().info("Узел запущен! Публикация чётных чисел началась.")
 
     def timer_callback(self):
-        msg = Int8()
+        msg = Int32()
         msg.data = self.current_number
-        self.publisher.publish(msg)
-        self.get_logger().info(f'Число: {self.current_number}')
-        self.current_number += 2
+        
+        # Публикуем число в основной топик
+        self.pub_even.publish(msg)
+        self.get_logger().info(f'Публикую число: {self.current_number}')
+        
+        # Проверка на переполнение
         if self.current_number >= 100:
+            # Публикуем значение переполнения в отдельный топик
+            overflow_msg = Int32()
+            overflow_msg.data = self.current_number  # или 100
+            self.pub_overflow.publish(overflow_msg)
+            
+            self.get_logger().warn(f'!!! ПЕРЕПОЛНЕНИЕ !!! Значение: {self.current_number}')
+            
+            # Сбрасываем счётчик
             self.current_number = 0
+        else:
+            # Увеличиваем на 2 (чётные числа)
+            self.current_number += 2
 
 def main():
-    rclpy.init()                    # Инициализация ROS 2
-    node = Counter()                # Создание узла
-
+    rclpy.init()
+    node = EvenNumberPublisher()
     try:
-        rclpy.spin(node)            # Запуск цикла обработки событий
+        rclpy.spin(node)
     except KeyboardInterrupt:
-        pass                        # Выход по Ctrl+C
+        pass
     finally:
-        node.destroy_node()         # Очистка ресурсов
-        rclpy.shutdown()            # Завершение ROS 2
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
